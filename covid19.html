@@ -33,7 +33,7 @@ function drawChart() {
 			var cells = lines[i].split(",");
 			if(cells.length > 0){
 				csvData.push(cells);
-				document.writeln("<li>" + cells[4]);
+				//document.writeln("<li>" + cells[4]);
 			}
 		}
 	};
@@ -52,7 +52,6 @@ function drawChart() {
 		/**/document.writeln("<li>" + formatDate(day) + ":" + n);
 	}
 
-	/**/document.writeln(plotData);
 	var data = new google.visualization.DataTable();
 	data.addColumn('string', 'Element');
 	data.addColumn('number', 'Percentage');
