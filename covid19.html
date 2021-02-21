@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+// Open Data Source
+var path = "./380008_ehime_covid19_patients.csv";
+//var path = "https://www.pref.ehime.jp/opendata-catalog/dataset/2174/resource/7073/380008_ehime_covid19_patients.csv";
+var csvData = new Array();
+
+google.charts.load('current', {packages: ['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function formatDate(dt) {
+	var y = dt.getFullYear();
+	var m = ("0" + (dt.getMonth() + 1)).split(-2);
+	var d = ("0" + (dt.getDate())).split(-2);
+	return y + '-' + m + '-' + d;
+}
+
+function getNextDay(dt){
+	dt.setDate(dt.getDate() + 1);
+	return dt;
+}
+
+function drawChart() {
+	/**/document.writeln(path);
+	var csv = new XMLHttpRequest();
+	csv.open("GET", path, true);
+	csv.onload = function(){
+		var lines = csv.responseText.split('\n');
+		for(var i = 0; i < lines.length; i++){
+			var cells = lines[i].split(",");
+			if(cells.length > 0){
+				csvData.push(cells);
+				document.writeln("<li>" + cells[4]);
+			}
+		}
+	};
+	csv.send(null);
+	
+	var today = new Date();
+	var start = new Date('2020-03-01');
+	
+	var x = 0;
+  var plotData = new Array();
+	for(var day = start; day < today; day = getNextDay(day)){
+		var n = 0;
+		while(formatDate(day) == csvData[x++][4]){
+			n++;
+		}
+  	plotData.push([formatDate(day), n]);
+		/**/document.writeln("<li>" + formatDate(day) + ":" + n);
+	}
+
+	/**/document.writeln(plotData);
+	var data = new google.visualization.DataTable();
+	data.addColumn('string', 'Element');
+	data.addColumn('number', 'Percentage');
+	data.addRows(plotData);
+
+        // Set chart options
+        var options = {'title':'How Much Pizza I Ate Last Night',
+                       'width':400,
+                       'height':300};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div"></div>
+  </body>
+</html>
