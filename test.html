@@ -21,7 +21,7 @@ function getNextDay(dt){
 function drawChart() {
 	/**/document.writeln(path);
 	var csv = new XMLHttpRequest();
-	csv.open("GET", path, false);
+	csv.open("GET", path, true);
 	//csv.send(null);
 	csv.onload = function(){
 		var lines = csv.responseText.split('\n');
