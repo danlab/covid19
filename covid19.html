@@ -37,7 +37,6 @@ function drawChart() {
 			}
 		}
 	};
-	csv.send(null);
 	
 	var today = new Date();
 	var start = new Date('2020-03-01');
@@ -68,7 +67,8 @@ function drawChart() {
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
       }
-    </script>
+	csv.send(null);
+</script>
   </head>
 
   <body>
