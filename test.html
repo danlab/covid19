@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
-var path = "./380008_ehime_covid19_patients.csv";
-//var path = "https://www.pref.ehime.jp/opendata-catalog/dataset/2174/resource/7073/380008_ehime_covid19_patients.csv";
+var path = "https://www.pref.ehime.jp/opendata-catalog/dataset/2174/resource/7073/380008_ehime_covid19_patients.csv";
 var csvData = new Array();
 
 google.charts.load('current', {packages: ['corechart']});
@@ -13,9 +12,9 @@ google.charts.setOnLoadCallback(drawChart);
 
 function formatDate(dt) {
 	var y = dt.getFullYear();
-	var m = dt.getMonth() + 1;
-	var d = dt.getDate();
-	return y + '/' + m + '/' + d;
+	var m = ("0" + (dt.getMonth() + 1)).split(-2);
+	var d = ("0" + (dt.getDate())).split(-2);
+	return y + '-' + m + '-' + d;
 }
 
 function getNextDay(dt){
@@ -29,20 +28,15 @@ function drawChart() {
 	csv.open("GET", path, true);
 	csv.onload = function(){
 		var lines = csv.responseText.split('\n');
-		/**/document.writeln("OK");
-		/**/document.writeln(lines.length);
-		/**/document.writeln(lines[0]);
 		for(var i = 0; i < lines.length; i++){
 			var cells = lines[i].split(",");
-			/**/document.writeln(cells.length);
-			/**/document.writeln(cells[0]);
 			if(cells.length > 0){
 				csvData.push(cells);
-				/**/document.writeln(cells);
+				document.writeln("<li>" + cells[4]);
 			}
 		}
 	};
-	csv.send();
+	csv.send(null);
 }
 </script>
 </head>
