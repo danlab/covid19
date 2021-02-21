@@ -22,7 +22,7 @@ function drawChart() {
 	/**/document.writeln(path);
 	var csv = new XMLHttpRequest();
 	csv.open("GET", path, false);
-	csv.send(null);
+	//csv.send(null);
 	csv.onload = function(){
 		var lines = csv.responseText.split('\n');
 		/**/document.writeln(lines.length);
