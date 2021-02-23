@@ -9,12 +9,12 @@ var path = "./380008_ehime_covid19_patients.csv";
 var csvData = new Array();
 
 google.charts.load('current', {packages: ['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+//google.charts.setOnLoadCallback(drawChart);
 
 function formatDate(dt) {
 	var y = dt.getFullYear();
-	var m = ("0" + (dt.getMonth() + 1)).split(-2);
-	var d = ("0" + (dt.getDate())).split(-2);
+	var m = ("0" + (dt.getMonth() + 1)).slice(-2);
+	var d = ("0" + (dt.getDate())).slice(-2);
 	return y + '-' + m + '-' + d;
 }
 
@@ -28,50 +28,50 @@ function drawChart(){
 	var csv = new XMLHttpRequest();
 	csv.open("GET", path, true);
 	csv.onload = function(){
+		var today = new Date();
+		/**/document.writeln(formatDate(today));
+		var start = new Date('2020-03-01');
+		var day = start;
+		/**/document.writeln(formatDate(day));
+	  var plotData = new Array();
 		var lines = csv.responseText.split('\n');
-		for(var i = 0; i < lines.length; i++){
+		var n = 0;
+		for(var i = 1; i < lines.length; i++){//1行目はヘッダなので除外する。
 			var cells = lines[i].split(",");
 			if(cells.length > 0){
-				csvData.push(cells);
+				if(formatDate(day) == cells[4]){
+					n++;
+				}
+				else{
+					/**/document.writeln("<li>" + [formatDate(day), n]);
+			  	plotData.push([formatDate(day), n]);
+			  	n = 0;
+					while(formatDate(day) != cells[4] && day <= today){
+						day = getNextDay(day);
+					}
+				}
 			}
 		}
+		
+		var data = new google.visualization.DataTable();
+		data.addColumn('string', 'Element');
+		data.addColumn('number', 'Percentage');
+		data.addRows(plotData);
+
+	        // Set chart options
+	        var options = {'title':'How Much Pizza I Ate Last Night',
+	                       'width':400,
+	                       'height':300};
+
+	        // Instantiate and draw our chart, passing in some options.
+		var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+		chart.draw(data, options);
 	};
-	
-	var today = new Date();
-	var start = new Date('2020-03-01');
-	
-	var x = 0;
-  var plotData = new Array();
-	for(var day = start; day < today; day = getNextDay(day)){
-		var n = 0;
-		while(formatDate(day) == csvData[x++][4]){
-			n++;
-		}
-  	plotData.push([formatDate(day), n]);
-		/**/document.writeln("<li>" + formatDate(day) + ":" + n);
-	}
-
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', 'Element');
-	data.addColumn('number', 'Percentage');
-	data.addRows(plotData);
-
-        // Set chart options
-        var options = {'title':'How Much Pizza I Ate Last Night',
-                       'width':400,
-                       'height':300};
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-
-	csv.send(null);
+	csv.send();
 }
 </script>
-  </head>
-
-  <body>
-    <!--Div that will hold the pie chart-->
-    <div id="chart_div"></div>
-  </body>
+</head>
+<body onload="drawChart()">
+<div id="chart_div"></div>
+</body>
 </html>
